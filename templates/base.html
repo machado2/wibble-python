@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+{%- if title %}
+    {% set pagetitle = title + " - Wibble News" %}
+{%- else %}
+    {% set pagetitle = "Wibble News" %}
+{%- endif %}
+{%- if not description %}
+    {% set description = "Get the latest news with a touch of wobble from The Wibble, your source for the unpredictable and unsteady world of current events" %}
+{%- endif %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{{ pagetitle }}</title>
+    <meta name="description" content="{{ description }}">
+    <meta property="og:type" content="website">
+    {%- if slug %}
+        <meta property="og:url" content="https://wibble.news/content/{{ slug }}">
+    {%- endif %}
+    <meta property="og:title" content="{{ pagetitle }}">
+    <meta property="og:description" content="{{ description }}">
+    {%- if image_id %}
+        <meta property="og:image" content="https://wibble.news/image/{{ image_id }}">
+    {%- endif %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="https://umami.wibble.news/script.js" data-website-id="0e545d96-5d53-42bd-8107-ac29695687ba"></script>
+    {%- block headers %}{% endblock headers %}
+</head>
+
+<body>
+<header>
+    <a href="/">Wibble News</a>
+    <a href="/create">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" style="font-size: 24px;"
+             height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+            <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12
+            12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12
+            12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z">
+            </path>
+        </svg>
+        {{ text_create_new_article }}
+    </a>
+</header>
+<div class="content">
+    {% block content %}{% endblock content %}
+</div>
+</body>
+
+</html>

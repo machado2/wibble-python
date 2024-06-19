@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<ul>
+    {% for i in items %}
+    <li>
+        <section>
+            <img src="/image/{{ i.image_id }}" alt="">
+            <h2>
+                <a href="/content/{{ i.slug }}">{{ i.title }}</a>
+            </h2>
+            <time>{{ i.created_at }}</time>
+            <p>{{ i.description }}</p>
+        </section>
+    </li>
+    {% endfor %}
+</ul>
+
+<footer>
+    <a href="?afterId={{ after_id }}">Next Page</a>
+</footer>
+
+{% endblock content %}

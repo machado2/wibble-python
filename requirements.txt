@@ -1,0 +1,9 @@
+Flask[async]
+Werkzeug
+python-dotenv
+SQLAlchemy[asyncio]
+jinja2
+asyncmy
+uvicorn
+fastapi
+starlette
