@@ -17,6 +17,7 @@ class Content(Base):
     generating = Column(Boolean)
     view_count = Column(Integer)
     hot_score = Column(Integer)
+    markdown = Column(String)
 
 
 class ImageData(Base):

@@ -8,7 +8,7 @@ from app.models import ImageData
 router = APIRouter()
 
 
-@router.get('/image/{image_id}', response_class=Response, responses={200: {"content": {"image/jpeg": {}}}})
+@router.get('/{image_id}', response_class=Response, responses={200: {"content": {"image/jpeg": {}}}})
 async def get_image(image_id: str, db: AsyncSession = Depends(get_session)):
     # noinspection PyTypeChecker
     query = select(ImageData).where(ImageData.id == image_id)
