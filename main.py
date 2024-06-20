@@ -3,16 +3,16 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 
-from app.article_list import router as index_router
+from app.article_list import router as article_list_router
+from app.get_image import router as get_image_router
 
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
 
-app.include_router(index_router, prefix='')
+app.include_router(article_list_router, prefix='')
+app.include_router(get_image_router, prefix='')
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8000))

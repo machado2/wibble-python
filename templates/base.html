@@ -22,7 +22,7 @@
     {%- if image_id %}
         <meta property="og:image" content="https://wibble.news/image/{{ image_id }}">
     {%- endif %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
     <script defer src="https://umami.wibble.news/script.js" data-website-id="0e545d96-5d53-42bd-8107-ac29695687ba"></script>
     {%- block headers %}{% endblock headers %}
 </head>

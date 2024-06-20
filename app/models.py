@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Boolean, Integer
+from sqlalchemy import Column, String, DateTime, Boolean, Integer, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -17,3 +17,10 @@ class Content(Base):
     generating = Column(Boolean)
     view_count = Column(Integer)
     hot_score = Column(Integer)
+
+
+class ImageData(Base):
+    __tablename__ = 'image_data'
+
+    id = Column(String, primary_key=True)
+    jpeg_data = Column(LargeBinary)
