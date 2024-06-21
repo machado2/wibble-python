@@ -10,7 +10,7 @@ from starlette.responses import HTMLResponse
 
 from app.db import get_session
 from app.models import Content
-from app.config import templates
+from app.template import render_template
 
 router = APIRouter()
 
@@ -103,5 +103,4 @@ async def article_list(request: Request, params: ContentListParams = Depends(),
     items = await get_next_page(db, params)
     formatted_items = [format_headline(item) for item in items]
     after_id = formatted_items[-1]['id'] if formatted_items else None
-    return templates.TemplateResponse("index.html", {"request": request, "items": formatted_items, "after_id": after_id,
-                                                     "style": "static/style.css"})
+    return render_template("index.html", request=request, items=formatted_items, after_id=after_id)

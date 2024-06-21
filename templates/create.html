@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>
+    Enter your prompt
+</h1>
+
+<p>
+    Type anything here for guiding the AI and it will try to guess what
+    you mean. You can try a title, part of a title, keywords,
+    instructions, or anything else you can think of.
+</p>
+<form action="/create" method="post">
+    <textarea name="prompt" placeholder="Enter your prompt / hint / instructions here..." rows="10" autoFocus></textarea>
+    <button type="submit">
+        Submit
+    </button>
+</form>
+
+{% endblock content %}
