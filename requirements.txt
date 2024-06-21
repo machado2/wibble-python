@@ -7,3 +7,5 @@ asyncmy
 uvicorn
 fastapi
 starlette
+openai
+requests

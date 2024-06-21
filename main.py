@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from app.article_list import router as article_list_router
 from app.get_image import router as get_image_router
 from app.get_content import router as get_content_router
-from app.get_create import router as get_create_router
+from app.create import router as get_create_router
 
 app = FastAPI()
 
