@@ -1,27 +1,52 @@
-from sqlalchemy import Column, String, DateTime, Boolean, Integer, LargeBinary
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from tortoise import fields
+from tortoise.models import Model
 
 
-class Content(Base):
-    __tablename__ = 'content'
+class Content(Model):
+    id = fields.CharField(pk=True, max_length=36)
+    slug = fields.CharField(unique=True, max_length=500)
+    started_llm_at = fields.DatetimeField(null=True)
+    finished_llm_at = fields.DatetimeField(null=True)
+    started_images_at = fields.DatetimeField(null=True)
+    finished_images_at = fields.DatetimeField(null=True, index=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    description = fields.TextField()
+    image_id = fields.CharField(max_length=36, null=True)
+    title = fields.CharField(max_length=500, index=True)
+    flagged = fields.BooleanField(default=False)
+    view_count = fields.IntField(default=0)
+    hot_score = fields.IntField(default=0)
+    markdown = fields.TextField(null=True)
+    user_input = fields.TextField()
+    content = fields.TextField()
 
-    id = Column(String, primary_key=True)
-    slug = Column(String, unique=True)
-    created_at = Column(DateTime)
-    description = Column(String)
-    image_id = Column(String)
-    title = Column(String)
-    flagged = Column(Boolean)
-    generating = Column(Boolean)
-    view_count = Column(Integer)
-    hot_score = Column(Integer)
-    markdown = Column(String)
+
+class ImageData(Model):
+    id = fields.CharField(pk=True, max_length=36)
+    jpeg_data = fields.BinaryField()
 
 
-class ImageData(Base):
-    __tablename__ = 'image_data'
+class Examples(Model):
+    id = fields.CharField(pk=True, max_length=36)
+    user_input = fields.TextField()
+    title = fields.CharField(max_length=500)
+    description = fields.TextField()
+    content = fields.TextField()
+    new_id = fields.IntField(null=True)
 
-    id = Column(String, primary_key=True)
-    jpeg_data = Column(LargeBinary)
+
+class ContentImage(Model):
+    id = fields.CharField(pk=True, max_length=36)
+    content_id = fields.CharField(max_length=36)
+    prompt_hash = fields.CharField(max_length=32)
+    prompt = fields.TextField()
+    alt_text = fields.CharField(max_length=500)
+    created_at = fields.DatetimeField()
+    flagged = fields.IntField()
+    regenerate = fields.IntField()
+    fail_count = fields.IntField()
+    generator = fields.CharField(max_length=500)
+    model = fields.CharField(max_length=500)
+    seed = fields.CharField(max_length=500)
+    parameters = fields.CharField(max_length=500)
+    view_count = fields.IntField()

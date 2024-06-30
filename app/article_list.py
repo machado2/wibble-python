@@ -1,14 +1,12 @@
 import datetime
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Request
-from sqlalchemy import or_, and_, desc
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 from starlette.responses import HTMLResponse
+from tortoise.expressions import Q
 
-from app.db import get_session
 from app.models import Content
 from app.template import render_template
 
@@ -28,62 +26,60 @@ class ContentListParams:
 class Headline:
     id: str
     slug: str
-    created_at: datetime.datetime
+    created_at: datetime
     description: str
     title: str
     image_id: Optional[str] = None
 
 
-async def get_next_page(db: AsyncSession, params: ContentListParams) -> List[Headline]:
+async def get_next_page(params: ContentListParams) -> List[Headline]:
     page_size = 20 if not params.page_size or params.page_size > 100 else params.page_size
-    query = select(Content).filter(and_(Content.flagged == False, Content.generating == False))  # noqa: E712
+    query = Content.filter(flagged=False)
+
     if params.search:
-        search_term = f"%{params.search}%"
         query = query.filter(
-            or_(
-                Content.slug.like(search_term),
-                Content.title.like(search_term),
-                Content.description.like(search_term)
-            )
+            Q(slug__icontains=params.search) |
+            Q(title__icontains=params.search) |
+            Q(description__icontains=params.search)
         )
 
     if params.t == "week":
-        delta = datetime.timedelta(weeks=1)
+        delta = timedelta(weeks=1)
     elif params.t == "month":
-        delta = datetime.timedelta(days=30)
+        delta = timedelta(days=30)
     else:
         delta = None
 
     if delta:
-        query = query.filter(Content.created_at > datetime.datetime.utcnow() - delta)
+        query = query.filter(created_at__gt=datetime.utcnow() - delta)
 
-    sort_column = {
-        "most_viewed": Content.view_count,
-        "hot": Content.hot_score
-    }.get(params.sort, Content.created_at)
+    sort_column_map = {
+        "most_viewed": "view_count",
+        "hot": "hot_score"
+    }
+    sort_column = sort_column_map.get(params.sort, "created_at")
 
     if params.after_id:
-        after_content = await db.get(Content, params.after_id)
+        after_content = await Content.get_or_none(id=params.after_id)
         if after_content:
+            after_value = getattr(after_content, sort_column)
             query = query.filter(
-                or_(
-                    and_(Content.id != after_content.id, sort_column <= getattr(after_content, sort_column.key)),
-                    sort_column < getattr(after_content, sort_column.key)
-                )
+                Q(id__not=after_content.id, **{f"{sort_column}__lte": after_value}) |
+                Q(**{f"{sort_column}__lt": after_value})
             )
 
-    query = query.order_by(desc(sort_column), desc(Content.id)).limit(page_size)
+    contents = await query.order_by(f"-{sort_column}", "-id").limit(page_size).all()
 
-    result = await db.execute(query)
-    contents = result.scalars().all()
-
-    return [Headline(
-        id=c.id,
-        slug=c.slug,
-        created_at=c.created_at,
-        description=c.description,
-        image_id=c.image_id,
-        title=c.title) for c in contents]
+    return [
+        Headline(
+            id=c.id,
+            slug=c.slug,
+            created_at=c.created_at,
+            description=c.description,
+            image_id=c.image_id,
+            title=c.title
+        ) for c in contents
+    ]
 
 
 def format_headline(h: Headline) -> dict:
@@ -98,9 +94,8 @@ def format_headline(h: Headline) -> dict:
 
 
 @router.get("/", response_class=HTMLResponse)
-async def article_list(request: Request, params: ContentListParams = Depends(),
-                       db: AsyncSession = Depends(get_session)):
-    items = await get_next_page(db, params)
+async def article_list(request: Request, params: ContentListParams = Depends()):
+    items = await get_next_page(params)
     formatted_items = [format_headline(item) for item in items]
     after_id = formatted_items[-1]['id'] if formatted_items else None
     return render_template("index.html", request=request, items=formatted_items, after_id=after_id)

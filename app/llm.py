@@ -1,12 +1,22 @@
-import requests
 import json
+
+import requests
+from starlette.responses import Response
 
 from app.config import OPENROUTER_API_KEY
 
 REFERER = "https://wibble.news"
 APP_NAME = "Wibble"
 
-def request_chat(messages, model):
+
+def content_from_response(response: any) -> str:
+    choices = response["choices"]
+    message = choices[0]["message"]
+    content = message["content"]
+    return content
+
+
+def request_chat(messages, model) -> str:
     response = requests.post(
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
@@ -19,6 +29,9 @@ def request_chat(messages, model):
             "messages": messages
         })
     )
-    return response["choices"][0]["message"]
-
-
+    if response.status_code < 200 or response.status_code >= 300:
+        print(response.text)
+    response.raise_for_status()
+    response = response.json()
+    content = content_from_response(response)
+    return content

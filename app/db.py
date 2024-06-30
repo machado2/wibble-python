@@ -1,19 +1,12 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from tortoise import Tortoise
 
-from app.config import DATABASE_URL
-
-# Async engine for PostgreSQL
-engine = create_async_engine(DATABASE_URL, echo=True)
-
-# Create async session
-# noinspection PyTypeChecker
-async_session = sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False
-)
+from app.settings import TORTOISE_ORM
 
 
-# Dependency to get async session
-async def get_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
+async def init():
+    await Tortoise.init(config=TORTOISE_ORM)
+    await Tortoise.generate_schemas()
+
+
+async def close():
+    await Tortoise.close_connections()
