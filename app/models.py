@@ -38,15 +38,7 @@ class Examples(Model):
 class ContentImage(Model):
     id = fields.CharField(pk=True, max_length=36)
     content_id = fields.CharField(max_length=36)
-    prompt_hash = fields.CharField(max_length=32)
     prompt = fields.TextField()
     alt_text = fields.CharField(max_length=500)
-    created_at = fields.DatetimeField()
-    flagged = fields.IntField()
-    regenerate = fields.IntField()
-    fail_count = fields.IntField()
-    generator = fields.CharField(max_length=500)
-    model = fields.CharField(max_length=500)
-    seed = fields.CharField(max_length=500)
-    parameters = fields.CharField(max_length=500)
-    view_count = fields.IntField()
+    created_at = fields.DatetimeField(auto_now_add=True)
+

@@ -9,8 +9,8 @@ from app import llm
 from app.article_repository import get_slug_for
 from app.config import USE_EXAMPLES, LANGUAGE_MODELS
 from app.examples import get_examples
-from app.image_generator import ImageToCreate
-from app.models import Content
+from app.image_generator import ImageToCreate, generate_images
+from app.models import Content, ContentImage, ImageData
 
 with open('prompts/system_with_placeholders.txt', 'r') as file:
     SYSTEM_WITH_PLACEHOLDERS = file.read()
@@ -71,11 +71,16 @@ async def create_article_images(content: Content):
         images_to_create.append(ImageToCreate(img_id, alt, prompt))
 
     content.started_images_at = datetime.now()
-    # images = await generate_images(images_to_create)
-    # images = []
+    images = await generate_images(images_to_create)
+    for img in images:
+        await ContentImage.create(id=img.img_id, content_id=content.id, prompt=img.img.prompt, alt_text=img.img.caption,
+                                  generator="aihorde", model=img.model)
+        await ImageData.create(id=img.img_id, jpeg_data=img.data)
     content.finished_images_at = datetime.now()
 
     content.markdown = markdown
+    content.image_id = images[0].img_id if images else None
+    content.finished_images_at = datetime.now()
     await content.save()
 
 

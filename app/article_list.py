@@ -5,6 +5,7 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Request
 from starlette.responses import HTMLResponse
+# noinspection PyPackageRequirements
 from tortoise.expressions import Q
 
 from app.models import Content
