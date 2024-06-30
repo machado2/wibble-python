@@ -1,0 +1,22 @@
+TORTOISE_ORM = {
+    "connections": {
+        "default": {
+            "engine": "tortoise.backends.asyncpg",
+            "credentials": {
+                "database": ***
+                "host": ***
+                "user": ***
+                "password": ***
+            }
+        }
+    },
+    "apps": {
+        "models": {
+            "models": ["app.models", "aerich.models"],
+            "default_connection": "default",
+        }
+    },
+}
+
+AI_HORDE_API_KEY = ***
+SD_MODEL = "AlbedoBase XL (SDXL)"

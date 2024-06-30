@@ -3,7 +3,7 @@ from typing import List
 
 from app.aihorde_image_generator import AiHordeImageGenerator
 from app.article_repository import ImageGenerated, ImageToCreate
-from app.settings import SD_MODEL
+from settings import SD_MODEL
 
 image_generator = AiHordeImageGenerator()
 

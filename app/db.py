@@ -1,6 +1,6 @@
 from tortoise import Tortoise
 
-from app.settings import TORTOISE_ORM
+from settings import TORTOISE_ORM
 
 
 async def init():

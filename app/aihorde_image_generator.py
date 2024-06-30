@@ -6,8 +6,8 @@ from io import BytesIO
 import requests
 from PIL import Image
 
-from app.settings import AI_HORDE_API_KEY
-from app.settings import SD_MODEL
+from settings import AI_HORDE_API_KEY
+from settings import SD_MODEL
 
 
 class AiHordeImageGenerator:

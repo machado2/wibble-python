@@ -1,3 +1,4 @@
+import logging
 import os
 from contextlib import asynccontextmanager
 
@@ -12,6 +13,8 @@ from app.db import init as init_db
 from app.get_content import router as get_content_router
 from app.get_image import router as get_image_router
 from app.wait import router as wait_router
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @asynccontextmanager
