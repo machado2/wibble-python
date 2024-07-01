@@ -64,7 +64,7 @@ class AiHordeImageGenerator:
         return res["id"]
 
     async def get_status(self, id_image) -> str:
-        for _ in range(10):
+        for _ in range(1000):
             j = self.get(f"/generate/status/{id_image}")
             if j.get("faulted"):
                 raise Exception("AI Horde Error")
