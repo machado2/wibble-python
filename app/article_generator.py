@@ -7,10 +7,10 @@ from fastapi import HTTPException
 
 from app import llm
 from app.article_repository import get_slug_for
-from settings import USE_EXAMPLES, LANGUAGE_MODELS
 from app.examples import get_examples
 from app.image_generator import ImageToCreate, generate_images
 from app.models import Content, ContentImage, ImageData
+from settings import USE_EXAMPLES, LANGUAGE_MODELS
 
 with open('prompts/system_with_placeholders.txt', 'r') as file:
     SYSTEM_WITH_PLACEHOLDERS = file.read()
@@ -87,7 +87,12 @@ async def create_article_images(content: Content):
 async def create_article_using_placeholders(article_id: str, instructions: str, model: str,
                                             use_examples: bool):
     content = await create_article_text(article_id, instructions, model, use_examples)
-    await create_article_images(content)
+    try:
+        await create_article_images(content)
+    except Exception as e:
+        logging.error(f"Error creating images: {e}")
+        await content.delete()
+        raise HTTPException(status_code=500, detail="Error creating images")
 
 
 async def create_article(art_id: str, instructions: str):
