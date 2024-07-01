@@ -35,7 +35,7 @@ class Headline:
 
 async def get_next_page(params: ContentListParams) -> List[Headline]:
     page_size = 20 if not params.page_size or params.page_size > 100 else params.page_size
-    query = Content.filter(flagged=False)
+    query = Content.filter(flagged=False, image_id__isnull=False, markdown__isnull=False)
 
     if params.search:
         query = query.filter(
