@@ -18,7 +18,7 @@ markdown = markdown_it.MarkdownIt()
 async def get_content(request: Request, background_tasks: BackgroundTasks, slug: str):
     content = await Content.filter(slug=slug).first()
     if content is None:
-        if background_tasks.tasks.count() > 0:
+        if len(background_ids) > 0:
             raise HTTPException(status_code=404, detail="Content not found")
         identifier = str(uuid4())
         background_ids[identifier] = True
