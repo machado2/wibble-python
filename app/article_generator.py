@@ -7,7 +7,7 @@ from fastapi import HTTPException
 
 from app import llm
 from app.article_repository import get_slug_for
-from app.config import USE_EXAMPLES, LANGUAGE_MODELS
+from settings import USE_EXAMPLES, LANGUAGE_MODELS
 from app.examples import get_examples
 from app.image_generator import ImageToCreate, generate_images
 from app.models import Content, ContentImage, ImageData

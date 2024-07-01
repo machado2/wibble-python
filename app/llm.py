@@ -1,9 +1,8 @@
 import json
 
 import requests
-from starlette.responses import Response
 
-from app.config import OPENROUTER_API_KEY
+from settings import OPENROUTER_API_KEY
 
 REFERER = "https://wibble.news"
 APP_NAME = "Wibble"

@@ -20,3 +20,6 @@ TORTOISE_ORM = {
 
 AI_HORDE_API_KEY = ***
 SD_MODEL = "AlbedoBase XL (SDXL)"
+USE_EXAMPLES = False
+LANGUAGE_MODELS = ["meta-llama/llama-3-70b-instruct:nitro"]
+OPENROUTER_API_KEY = ****
