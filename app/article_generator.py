@@ -92,7 +92,6 @@ async def create_article_using_placeholders(article_id: str, instructions: str, 
     except Exception as e:
         logging.error(f"Error creating images: {e}")
         await content.delete()
-        raise HTTPException(status_code=500, detail="Error creating images")
 
 
 async def create_article(art_id: str, instructions: str):
