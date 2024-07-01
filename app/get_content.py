@@ -1,9 +1,13 @@
-import markdown_it
-from fastapi import APIRouter, HTTPException, Request
-from starlette.responses import HTMLResponse
+from uuid import uuid4
 
+import markdown_it
+from fastapi import APIRouter, HTTPException, Request, BackgroundTasks
+from starlette.responses import HTMLResponse, RedirectResponse
+
+from app.create import create_article_and_remove_task
 from app.models import Content
 from app.template import render_template
+from app.wait import background_ids
 
 router = APIRouter()
 
@@ -11,10 +15,13 @@ markdown = markdown_it.MarkdownIt()
 
 
 @router.get("/{slug}", response_class=HTMLResponse)
-async def get_content(request: Request, slug: str):
+async def get_content(request: Request, background_tasks: BackgroundTasks, slug: str):
     content = await Content.filter(slug=slug).first()
     if content is None:
-        raise HTTPException(status_code=404, detail="Content not found")
+        identifier = str(uuid4())
+        background_ids[identifier] = True
+        background_tasks.add_task(create_article_and_remove_task, identifier, slug)
+        return RedirectResponse(url=f"/wait/{identifier}", status_code=303)
     html = markdown.render(content.markdown or "")
     return render_template(
         "content.html", request,
